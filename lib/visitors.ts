@@ -26,3 +26,31 @@ export async function findVisitorByPhone(normalizedPhone: string) {
   await connectToDatabase();
   return Visitor.findOne({ phone: normalizedPhone }).lean();
 }
+
+export async function findVisitorsByPhone(normalizedPhone: string) {
+  if (!normalizedPhone) {
+    return [];
+  }
+
+  await connectToDatabase();
+  return Visitor.find({ phone: normalizedPhone }).lean();
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export async function findVisitorByPhoneAndEmail(
+  normalizedPhone: string,
+  email: string,
+) {
+  if (!normalizedPhone || !email) {
+    return null;
+  }
+
+  await connectToDatabase();
+  return Visitor.findOne({
+    phone: normalizedPhone,
+    email: new RegExp(`^${escapeRegex(email)}$`, "i"),
+  }).lean();
+}
