@@ -1,15 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import mongoose from "mongoose";
-
-import { connectToDatabase } from "../../lib/mongoose";
-
-const visitorSchema = new mongoose.Schema(
-  {},
-  { strict: false, collection: "visitors" },
-);
-
-const Visitor =
-  mongoose.models.Visitor || mongoose.model("Visitor", visitorSchema);
+import { findVisitorByPhone, normalizePhone } from "../../lib/visitors";
 
 type ErrorResponse = {
   message: string;
@@ -25,33 +15,28 @@ export default async function handler(
   }
 
   const { mobile } = req.query;
-  let mobileValue = Array.isArray(mobile) ? mobile[0] : mobile;
+  const mobileValue = Array.isArray(mobile) ? mobile[0] : mobile;
 
   if (!mobileValue) {
     return res.status(400).json({ message: "mobile query param is required" });
   }
 
-  // Remove '91' from the front if present
-  if (mobileValue.startsWith("91")) {
-    mobileValue = mobileValue.slice(2);
+  const normalizedPhone = normalizePhone(mobileValue);
+
+  if (!normalizedPhone) {
+    return res.status(400).json({ message: "mobile query param is invalid" });
   }
 
-  console.log("Mobile:", mobileValue);
+  console.log("Mobile:", normalizedPhone);
 
   try {
-    await connectToDatabase();
-
-    const visitor = await Visitor.findOne({ phone: mobileValue }).lean();
+    const visitor = await findVisitorByPhone(normalizedPhone);
 
     if (!visitor) {
       return res.status(404).json({ message: "Visitor not found" });
     }
 
-    return res.status(200).json({ 
-      text: {
-        body: JSON.stringify(visitor)
-      }
-    });
+    return res.status(200).json(visitor as Record<string, unknown>);
   } catch (error) {
     console.error("Error fetching visitor:", error);
     return res.status(500).json({ message: "Internal server error" });
