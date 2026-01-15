@@ -42,7 +42,11 @@ export default async function handler(
       return res.status(404).json({ message: "Visitor not found" });
     }
 
-    return res.status(200).json(visitor);
+    return res.status(200).json({ 
+      text: {
+        body: JSON.stringify(visitor)
+      }
+    });
   } catch (error) {
     console.error("Error fetching visitor:", error);
     return res.status(500).json({ message: "Internal server error" });
