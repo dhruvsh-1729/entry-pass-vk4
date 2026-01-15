@@ -25,10 +25,15 @@ export default async function handler(
   }
 
   const { mobile } = req.query;
-  const mobileValue = Array.isArray(mobile) ? mobile[0] : mobile;
+  let mobileValue = Array.isArray(mobile) ? mobile[0] : mobile;
 
   if (!mobileValue) {
     return res.status(400).json({ message: "mobile query param is required" });
+  }
+
+  // Remove '91' from the front if present
+  if (mobileValue.startsWith("91")) {
+    mobileValue = mobileValue.slice(2);
   }
 
   console.log("Mobile:", mobileValue);
