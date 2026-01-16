@@ -207,9 +207,17 @@ function getEntryPassNoticeLines(): string[] {
 function getNoEntryPassLines(): string[] {
   return [
     "No entry pass was found for this number.",
-    "Please register on vk.jyot.in/register for exhibition visit or vk.jyot.in/vk4-registration for closed door sessions.",
-    VK_REGISTER_URL,
-    VK4_REGISTER_URL,
+    "",
+    "Please register using links below.",
+    "",
+    "For exhibition:",
+    "vk.jyot.in/register",
+    "",
+    "For competitions and events:",
+    "vk.jyot.in/vk4-registration",
+    "",
+    "For DLLE/NSS students:",
+    "vk.jyot.in/vk4-dlle-registration",
   ];
 }
 
