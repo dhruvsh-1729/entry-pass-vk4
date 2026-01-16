@@ -1,6 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
-const uri = 'mongodb+srv://dineshsuthar_db_user:o8gdfCvdnMaR3S2J@vkstlclustor.mj3fvmo.mongodb.net/vk4_prod?appName=whatsapp';
+const uri = '';
 const dbName = 'vk4_prod';
 
 async function getUniqueVisitorCount() {
